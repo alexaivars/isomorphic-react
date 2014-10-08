@@ -1,0 +1,28 @@
+{
+  "name": "isomorphic-react",
+  "version": "0.0.0",
+  "description": "Example app to demonstrate isomorphic JavaScript concepts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./.postinstall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alexaivars/isomorphic-react.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "amd-loader": "0.0.5",
+    "director": "^1.2.3",
+    "express": "^4.9.5",
+    "express-handlebars": "^1.1.0",
+    "lodash": "^2.4.1",
+    "q": "^1.0.1",
+    "react": "^0.11.2",
+    "react-tools": "^0.11.2"
+  },
+  "devDependencies": {
+  }
+}

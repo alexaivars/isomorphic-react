@@ -1,0 +1,42 @@
+#!/bin/bash
+echo "====> Running post install"
+
+# echo "      Installing bower dependencies."
+# node_modules/bower/bin/bower install
+
+echo "      Creating runtime folders."
+mkdir -p node_modules
+
+echo "      Setting runtime symlinks."
+ln -sf ../app node_modules
+
+#if [ "$DYNO" == "" ]; then
+echo "      Compile jsx templates."
+node_modules/react-tools/bin/jsx -x jsx --cache-dir .jsx-cache jsx app/generated
+
+#fi
+# 
+# HOOK_NAMES="applypatch-msg pre-applypatch post-applypatch pre-commit prepare-commit-msg commit-msg post-commit pre-rebase post-checkout post-merge pre-receive update post-receive post-update pre-auto-gc"
+# HOOK_DIR=.git/hooks
+# 
+# for hook in $HOOK_NAMES; do
+#     if [ ! -h .githooks/$hook -a -x .githooks/$hook ]; then
+# 			echo "      installing git $hook hook"
+#     	# If the hook already exists, is executable, and is not a symlink
+#     	# create the symlink, overwriting the file if it exists
+#     	# probably the only way this would happen is if you're using an old version of git
+#     	# -- back when the sample hooks were not executable, instead of being named ____.sample
+#     	if [ ! -h $HOOK_DIR/$hook -a -x $HOOK_DIR/$hook ]; then
+#       	echo "      moving local git hook."  
+# 				mv $HOOK_DIR/$hook $HOOK_DIR/$hook.local
+#     	fi
+# 
+# 			# If the hook already is not symlinked create the symlink.
+# 			if [ ! -L $HOOK_DIR/$hook ]; then
+# 				ln -sf ../../.githooks/$hook $HOOK_DIR/$hook
+# 			fi
+# 		fi
+# done
+# 
+# 
+# jsx -x jsx --cache-dir .jsx-cache jsx build/react-components
