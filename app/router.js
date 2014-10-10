@@ -8,6 +8,7 @@ define(function(require, exports, module) {
 			isServer = typeof window === 'undefined',
 			DirectorRouter = isServer ? director.http.Router : director,
 			firstRender = true,
+			_ = require('lodash'),
 			appId = 'example_app';
 
 	function Router(routesFn) {
@@ -45,7 +46,7 @@ define(function(require, exports, module) {
 			if (!isServer && firstRender) {
 				console.log('firstrender');
 				firstRender = false;
-				return;
+				// return;
 			}
 
 			// `routeContext` has `req` and `res` when on the server (from Director).
@@ -54,6 +55,17 @@ define(function(require, exports, module) {
 					handleErr = router.handleErr.bind(routeContext);
 
 			function handleRoute() {
+				var query;
+				if(isServer) {
+					query = routeContext.req.query;
+				} else {
+					query = _.reduce(window.location.search.substring(1).split('&'), function(result, param) {
+						var pair = param.split('=');
+						result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+						return result;
+					},{});
+				}
+
 				handler.apply(null, params.concat(function routeHandler(err, viewPath, data) {
 					if (err) {
 						return handleErr(err);
@@ -64,7 +76,7 @@ define(function(require, exports, module) {
 					} else {
 						router.handleClientRoute(viewPath, data);
 					}
-				}));
+				},query));
 			}
 
 			try {
@@ -88,17 +100,28 @@ define(function(require, exports, module) {
 
 	Router.prototype.handleClientRoute = function(viewPath, model) {
 		console.log('handleClientRoute');
-		React.renderComponent(Index({model:model}), document.getElementById(appId));
+
+		var query = _.reduce(window.location.search.substring(1).split('&'), function(result, param) {
+			var pair = param.split('=');
+			result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+			return result;
+		},{});
+	
+		model.meta = model.meta || {};
+		model.meta.query = query;
+		React.renderComponent(Index({model:model, router:this.directorRouter}), document.getElementById(appId));
 	};
 
 	Router.prototype.handleServerRoute = function(viewPath, model, req, res) {
 		console.log('handleServerRoute');
 		try {
-		res.render('layout',{
-			id: appId,
-			body: React.renderComponentToString(Index({model:model})),
-			bodyModel: JSON.stringify(model, undefined, 4)
-		});
+			model.meta = model.meta || {};
+			model.meta.query = req.query;
+			res.render('layout',{
+				id: appId,
+				body: React.renderComponentToString(Index({model:model})),
+				bodyModel: JSON.stringify(model, undefined, 4)
+			});
 		} catch (e) {
 			console.log(e);
 		}

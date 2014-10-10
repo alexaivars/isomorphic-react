@@ -8,11 +8,11 @@ if (typeof window.define !== "function") {
 		
 		}
 }
-
+console.log('a');
 requirejs.config({
 	baseUrl: '/',
 	paths: {
-		'jquery': 'app/libs/window.jquery',
+		'jquery': 'node_modules/jquery/dist/jquery',
 		'modernizr': 'app/libs/window.modernizr',
 		'lodash': 'node_modules/lodash/dist/lodash',
 		'reqwest': 'node_modules/reqwest/reqwest',
