@@ -3,20 +3,42 @@
 define(function(require, exports, module) {
 	var React = require('react');
 	
-	var SearchInput = React.createClass({
+	var SpotifySearch = React.createClass({
+		displayName: 'SpotifySearch',
+		propTypes: {
+			value: React.PropTypes.string,
+			onChange: React.PropTypes.func.isRequired
+		},
 		handleChange: function(event) {
-			try {
-				this.props.onChange(event.target.value);
-			} catch (e) {
-				console.log('missing onChange handler');
+
+			var value = event.target.value;
+
+			this.props.onChange(value);
+			this.setState({
+				value: value
+			});
+
+		},
+		getInitialState: function() {
+			return {
+				value: this.props.value
 			}
 		},
 		render: function() {
-			var query = this.props.value;
-			var changeHandler = this.handleChange;
 			return (
-				<form>
-					<input type='text' value={query} onChange={changeHandler}/>
+				<form method='GET'>
+					<div className='input-group'>
+						<input 
+							type='text'
+							className='form-control'
+							name='q'
+							value={this.state.value}
+							onChange={this.handleChange}
+							autoComplete='off' />
+						<span className='input-group-btn'>
+							<button className='btn btn-default' type='submit'>Go!</button>
+						</span>
+					</div>
 				</form>
 			);
 		}
@@ -29,13 +51,47 @@ define(function(require, exports, module) {
 			}
 			var items = this.props.model.items;
 			return (
-			<ul>
+			<ul className='list-group'>
 			{items.map(function (item) {
-				return <li key={item.id}>
-					<a href={item.href}>{item.name}</a>
+				return <li key={item.id} className='list-group-item'>
+					<SpotifyTrack model={item}/>
 				</li>;
 			})}
 			</ul>
+			);
+		}
+	});
+
+	var SpotifyTrack = React.createClass({
+		render: function() {
+			if(!this.props.model) {
+				return false;
+			}
+			
+			var model = this.props.model;
+
+			return (
+				<article className='row'>
+					<figure className='col-xs-3'>
+						<img className='img-responsive img-rounded' src={model.album.images[1].url}/>
+					</figure>
+					<div className='col-xs-9'>
+						<h2 className='h5'>{model.album.name}</h2>
+						<h1 className='h4'>{model.name}</h1>
+					</div>
+				</article>
+			);
+		}
+	});
+
+	var Alert = React.createClass({
+		render: function() {
+			if(!this.props.value) {
+				return false;
+			}
+			
+			return (
+				<div className='alert alert-info' role='alert'>{this.props.value}</div>
 			);
 		}
 	});
@@ -65,11 +121,15 @@ define(function(require, exports, module) {
 			}
 				
 			return (
-				<div>
-					<h1>Spotify search</h1>
-					<p>{message}</p>
-					<SpotifyTracks model={tracks}/>
-					<SearchInput value={query} onChange={this.search}/>
+				<div className='container-fluid'>
+					<div className='jumbotron'>
+						<h1>Spotify search</h1>
+					</div>
+					<div className='spotify-search'>
+						<SpotifySearch value={query} onChange={this.search}/>
+						<SpotifyTracks model={tracks}/>
+						<Alert value={message}/>
+					</div>
 				</div>
 			);
 		}

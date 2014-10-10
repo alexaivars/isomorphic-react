@@ -30,6 +30,7 @@ app.set('view engine', 'hbs');
 
 app.use('/app', express.static(path.join(root,'app')));
 app.use('/node_modules', express.static(path.join(root,'node_modules')));
+app.use('/resources', express.static(path.join(root,'resources')));
 
 // Mount the routes defined in `app/routes` on our server.
 app.use(router.middleware());
