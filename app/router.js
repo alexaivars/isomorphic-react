@@ -1,15 +1,19 @@
 define(function(require, exports, module) {
 	
-	var director = require('director')
-		, React = require('react')
-		, Layout = require('app/generated/core/layout') 
-		, isServer = typeof window === 'undefined'
-		, DirectorRouter = isServer ? director.http.Router : director
-		, firstRender = true
-	;
+	"use strict";
+
+	var director = require('director'),
+			React = require('react'),
+			Index = require('app/generated/core/layout'),
+			isServer = typeof window === 'undefined',
+			DirectorRouter = isServer ? director.http.Router : director,
+			firstRender = true,
+			appId = 'example_app';
 
 	function Router(routesFn) {
-		if (routesFn == null) throw new Error("Must provide routes.");
+		if (routesFn === null || routesFn === undefined) {
+			throw new Error("Must provide routes.");
+		}
 		this.directorRouter = new DirectorRouter(this.parseRoutes(routesFn));
 	}
 
@@ -34,7 +38,6 @@ define(function(require, exports, module) {
 
 	Router.prototype.getRouteHandler = function(handler) {
 		var router = this;
-
 		return function() {
 			/** If it's the first render on the client, just return; we don't want to
 			 * replace the page's HTML.
@@ -46,14 +49,15 @@ define(function(require, exports, module) {
 			}
 
 			// `routeContext` has `req` and `res` when on the server (from Director).
-			var routeContext = this
-				, params = Array.prototype.slice.call(arguments)
-				, handleErr = router.handleErr.bind(routeContext)
-			;
+			var routeContext = this,
+					params = Array.prototype.slice.call(arguments),
+					handleErr = router.handleErr.bind(routeContext);
 
 			function handleRoute() {
 				handler.apply(null, params.concat(function routeHandler(err, viewPath, data) {
-					if (err) return handleErr(err);
+					if (err) {
+						return handleErr(err);
+					}
 					data = data || {};
 					if (isServer) {
 						router.handleServerRoute(viewPath, data, routeContext.req, routeContext.res);
@@ -77,22 +81,27 @@ define(function(require, exports, module) {
 		if (this.next) {
 			this.next(err);
 		} else {
-			alert(err.message);
+			console.error(err.message);
 		}
 	};
 
 
 	Router.prototype.handleClientRoute = function(viewPath, model) {
 		console.log('handleClientRoute');
-		React.renderComponent(Layout({model:data}), document.getElementById('view-container'));
+		React.renderComponent(Index({model:model}), document.getElementById(appId));
 	};
 
 	Router.prototype.handleServerRoute = function(viewPath, model, req, res) {
-		console.log('handleServerRoute', React.renderComponentToString(Layout({model:model})));
+		console.log('handleServerRoute');
+		try {
 		res.render('layout',{
-			body: React.renderComponentToString(Layout({model:model})),
+			id: appId,
+			body: React.renderComponentToString(Index({model:model})),
 			bodyModel: JSON.stringify(model, undefined, 4)
 		});
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	/*
@@ -121,8 +130,9 @@ define(function(require, exports, module) {
 	 * Client-side handler to start router.
 	 */
 	Router.prototype.start = function(bootstrappedData) {
-		this.bootstrappedData = bootstrappedData;
-
+		console.log('start');
+		this.bootstrappedData = window[appId + 'BootstrappedData'];
+		this.handleClientRoute(null, this.bootstrappedData);
 		/**
 		 * Tell Director to use HTML5 History API (pushState).
 		 */
@@ -135,11 +145,11 @@ define(function(require, exports, module) {
 		 * pushState.
 		 */
 		document.addEventListener('click', function(e) {
-			var el = e.target
-				, dataset = el && el.dataset
-			;
+			var el = e.target,
+					dataset = el && el.dataset;
+
 			if (el && el.nodeName === 'A' && (
-					dataset.passThru == null || dataset.passThru === 'false'
+					dataset.passThru === null || dataset.passThru === 'false'
 				)) {
 				this.directorRouter.setRoute(el.attributes.href.value);
 				e.preventDefault();
@@ -162,3 +172,4 @@ define(function(require, exports, module) {
 	module.exports = Router;
 
 });
+

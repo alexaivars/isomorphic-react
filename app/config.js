@@ -1,5 +1,6 @@
 /*global requirejs, require, beta*/
 
+
 if (typeof window.define !== "function") {
 		try {
 			window.define = beta.define;
@@ -11,12 +12,20 @@ if (typeof window.define !== "function") {
 requirejs.config({
 	baseUrl: '/',
 	paths: {
+		'jquery': 'app/libs/window.jquery',
+		'modernizr': 'app/libs/window.modernizr',
+		'lodash': 'node_modules/lodash/dist/lodash',
+		'reqwest': 'node_modules/reqwest/reqwest',
+		'es5-shim': 'node_modules/es5-shim/es5-shim',
+		'es5-sham': 'node_modules/es5-shim/es5-sham',
 		'q': 'node_modules/q/q',
 		'react': 'node_modules/react/dist/react',
-		'lodash': 'node_modules/lodash/dist/lodash',
-		'director': 'node_modules/director/build/director' 
+		'director': 'node_modules/director/build/director',
+		'ignore': 'app/utils/ignore'
 	},
 	deps: [
+		'es5-shim',
+		'es5-sham'
 	],
 	shim: {
 		'director': {
@@ -25,7 +34,10 @@ requirejs.config({
 	},
 	map: {
 		'*': {
-			underscore: 'lodash'
+			'underscore': 'lodash',
+			'node-cache': 'ignore',
+			'amd-loader': 'ignore',
+			'request': 'ignore'
 		}
 	},
 	packages: [
