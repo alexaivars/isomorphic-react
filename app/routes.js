@@ -31,7 +31,6 @@ define(function(require, exports, module) {
 
 	module.exports = function(match) {
 		match('/', function(callback, query) {
-			console.log(query);
 			ajax({
         url: endpoint,
 				method: 'get',

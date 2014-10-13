@@ -18,6 +18,22 @@ define(function(require, exports, module) {
 		this.directorRouter = new DirectorRouter(this.parseRoutes(routesFn));
 	}
 
+	function getQueryParams(request) {
+		if(request) {
+			return request.query;
+		}	
+
+		if(typeof window !== 'undefined') {
+			return _.reduce(window.location.search.substring(1).split('&'), function(result, param) {
+				var pair = param.split('=');
+				result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+				return result;
+			},{});
+		}
+
+		throw new Error("Missing window or request object");
+	}
+
 	/**
 	 * Capture routes as object that can be passed to Director.
 	 */
@@ -40,43 +56,27 @@ define(function(require, exports, module) {
 	Router.prototype.getRouteHandler = function(handler) {
 		var router = this;
 		return function() {
-			/** If it's the first render on the client, just return; we don't want to
-			 * replace the page's HTML.
-			 */
-			if (!isServer && firstRender) {
-				console.log('firstrender');
-				firstRender = false;
-				// return;
-			}
-
+			
 			// `routeContext` has `req` and `res` when on the server (from Director).
 			var routeContext = this,
 					params = Array.prototype.slice.call(arguments),
 					handleErr = router.handleErr.bind(routeContext);
 
 			function handleRoute() {
-				var query;
-				if(isServer) {
-					query = routeContext.req.query;
-				} else {
-					query = _.reduce(window.location.search.substring(1).split('&'), function(result, param) {
-						var pair = param.split('=');
-						result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-						return result;
-					},{});
-				}
-
-				handler.apply(null, params.concat(function routeHandler(err, viewPath, data) {
-					if (err) {
-						return handleErr(err);
-					}
-					data = data || {};
-					if (isServer) {
-						router.handleServerRoute(viewPath, data, routeContext.req, routeContext.res);
-					} else {
-						router.handleClientRoute(viewPath, data);
-					}
-				},query));
+				handler.apply(null, params.concat(
+					function routeHandler(err, viewPath, data) {
+						if (err) {
+							return handleErr(err);
+						}
+						data = data || {};
+						if (isServer) {
+							router.handleServerRoute(viewPath, data, routeContext.req, routeContext.res);
+						} else {
+							router.handleClientRoute(viewPath, data);
+						}
+					},
+					getQueryParams(routeContext.req)
+				));
 			}
 
 			try {
@@ -84,6 +84,7 @@ define(function(require, exports, module) {
 			} catch (err) {
 				handleErr(err);
 			}
+
 		};
 	};
 
@@ -99,32 +100,21 @@ define(function(require, exports, module) {
 
 
 	Router.prototype.handleClientRoute = function(viewPath, model) {
-		console.log('handleClientRoute');
-
-		var query = _.reduce(window.location.search.substring(1).split('&'), function(result, param) {
-			var pair = param.split('=');
-			result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-			return result;
-		},{});
-	
+		console.log('handleClientRoute', viewPath);
 		model.meta = model.meta || {};
-		model.meta.query = query;
+		model.meta.query = getQueryParams();
 		React.renderComponent(Index({model:model, router:this.directorRouter}), document.getElementById(appId));
 	};
 
 	Router.prototype.handleServerRoute = function(viewPath, model, req, res) {
-		console.log('handleServerRoute');
-		try {
-			model.meta = model.meta || {};
-			model.meta.query = req.query;
-			res.render('layout',{
-				id: appId,
-				body: React.renderComponentToString(Index({model:model})),
-				bodyModel: JSON.stringify(model, undefined, 4)
-			});
-		} catch (e) {
-			console.log(e);
-		}
+		console.log('handleServerRoute:', viewPath);
+		model.meta = model.meta || {};
+		model.meta.query = getQueryParams(req);
+		res.render('layout',{
+			id: appId,
+			body: React.renderComponentToString(Index({model:model})),
+			bodyModel: JSON.stringify(model, undefined, 4)
+		});
 	};
 
 	/*
@@ -154,8 +144,6 @@ define(function(require, exports, module) {
 	 */
 	Router.prototype.start = function(bootstrappedData) {
 		console.log('start');
-		this.bootstrappedData = window[appId + 'BootstrappedData'];
-		this.handleClientRoute(null, this.bootstrappedData);
 		/**
 		 * Tell Director to use HTML5 History API (pushState).
 		 */

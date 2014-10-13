@@ -61,6 +61,23 @@ define(function(require, exports, module) {
 			);
 		}
 	});
+	
+	var SpotifyAlbumCover = React.createClass({
+		render: function() {	
+			var url;
+			try { 
+				url = this.props.model.images[1].url
+			} catch(e) {
+				console.log('album missing covere image', this.props.model)
+				return false;
+			}
+			return this.transferPropsTo(
+				<figure>
+					<img className='img-responsive img-rounded' src={url}/>
+				</figure>
+			);
+		}
+	});
 
 	var SpotifyTrack = React.createClass({
 		render: function() {
@@ -72,9 +89,7 @@ define(function(require, exports, module) {
 
 			return (
 				<article className='row'>
-					<figure className='col-xs-3'>
-						<img className='img-responsive img-rounded' src={model.album.images[1].url}/>
-					</figure>
+					<SpotifyAlbumCover className='col-xs-3' model={model.album} />
 					<div className='col-xs-9'>
 						<h2 className='h5'>{model.album.name}</h2>
 						<h1 className='h4'>{model.name}</h1>
