@@ -8,9 +8,16 @@ if (typeof window.define !== "function") {
 		
 		}
 }
-console.log('a');
+
+define('window-react', ['react'], function(react) {
+	'use strict';
+	console.warn('window-react', 'nead to fix react-router that breakes on the client');
+	window.React = react;
+});
+
 requirejs.config({
 	baseUrl: '/',
+	suppress: { nodeShim: true },
 	paths: {
 		'jquery': 'node_modules/jquery/dist/jquery',
 		'modernizr': 'app/libs/window.modernizr',
@@ -20,12 +27,14 @@ requirejs.config({
 		'es5-sham': 'node_modules/es5-shim/es5-sham',
 		'q': 'node_modules/q/q',
 		'react': 'node_modules/react/dist/react',
+		'react-router': 'node_modules/react-router/dist/react-router',
 		'director': 'node_modules/director/build/director',
 		'ignore': 'app/utils/ignore'
 	},
 	deps: [
 		'es5-shim',
-		'es5-sham'
+		'es5-sham',
+		'window-react'
 	],
 	shim: {
 		'director': {
