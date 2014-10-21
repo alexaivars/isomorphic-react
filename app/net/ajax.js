@@ -4,29 +4,24 @@ define(function(require, exports, module) {
 
   require("amd-loader");
 
-  var Q = require('q');
-  var request = require('request');
-  var $	= require('jquery');
-  var isServer = typeof window === 'undefined';
+	var request = require('superagent');
+	var Q = require('q');
 
   function wrapper(options) {
     var deferred = Q.defer();
-    request.get({
-      url: options.url,
-			qs: options.data,
-      json:true
-    }, function (err, httpResponse, body) {
-      // TODO should reject the request if 404, 500 and so on. See jQuery.ajax
-			if (err) {
-        deferred.reject(new Error(err));
-      } else {
-        deferred.resolve(body);
-      }
-    });
-
+		request
+			.get(options.url)
+			.query(options.data)
+			.end(function(error, res){
+				if(res.status === 200) {
+					deferred.resolve(res.body);
+				} else {
+					deferred.reject(res.body);
+				}
+			})	
     return deferred.promise;
-  }
+	}
 
-  module.exports = (isServer) ? wrapper : $.ajax;
+  module.exports = wrapper;
 
 });

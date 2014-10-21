@@ -1,6 +1,5 @@
 define(function(require, exports, module) {
 	var Q = require('q'),
-			isServer = typeof window === 'undefined',
 			endpoint = 'https://api.spotify.com/v1/search/',
 			ajax = require('app/net/ajax');
 
@@ -19,13 +18,7 @@ define(function(require, exports, module) {
 				callback(null, 'index', response);
 			})
 			.fail(function(err) {
-				var ret;
-				try {
-					ret = err.response?JSON.parse(err.response):{};
-				} catch(e) {
-					ret = {}
-				}
-				callback(null, 'index', ret);
+				callback(null, 'index', err);
 			});
 		});
 	};

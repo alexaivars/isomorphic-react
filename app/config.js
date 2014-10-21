@@ -21,6 +21,7 @@ requirejs.config({
 		'q': 'node_modules/q/q',
 		'react': 'node_modules/react/dist/react',
 		'director': 'node_modules/director/build/director',
+		'superagent': 'node_modules/superagent/superagent',
 		'ignore': 'app/utils/ignore'
 	},
 	deps: [
