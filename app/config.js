@@ -29,6 +29,7 @@ requirejs.config({
 		'react': 'node_modules/react/dist/react',
 		'react-router': 'node_modules/react-router/dist/react-router',
 		'director': 'node_modules/director/build/director',
+		'superagent': 'node_modules/superagent/superagent',
 		'ignore': 'app/utils/ignore'
 	},
 	deps: [
