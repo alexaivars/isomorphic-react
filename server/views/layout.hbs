@@ -6,25 +6,29 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Isomorphic JavasScript example</title>
+		<title>Example app</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<!-- link rel="stylesheet" href="/static/css/main.css" //-->
+		<meta name="robots" content="noindex, nofollow">
 		<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
 		<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 		<style>
-			.spotify-search > * + * {
-				margin-top: 1em;
-			}
+		.spotify-search > * + * {
+			margin-top: 1em;
+		}
 		</style>
 	</head>
 	<body>
-		<div id="{{{id}}}">
-			{{{body}}}
+		<div id="{{{uid}}}">
+			{{{html}}}
 		</div>
-		<!-- script>window.{{{id}}}BootstrappedData = {{{bodyModel}}}</script -->
-		<script data-main="/app/config" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script data-main="/app/config" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.14/require.min.js"></script>
+		<script>
+			{{{state}}}
+		</script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.3/es5-shim.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.3/es5-sham.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.0/react.js"></script>
+		<script src="/resources/js/client.bundle.js"></script>
 	</body>
 </html>

@@ -1,7 +1,7 @@
 Isomorphic JavaScript Example
 ===================
 
-This is a small sample app built with react, requirejs and spotify search api to demonstrate isomorphic JavaScript concepts.
+This is a small sample app built react, react-router, fluxible-app and spotify search api to demonstrate isomorphic JavaScript concepts.
 
 ### Run `npm install` to install dependenices
 		$ npm install
