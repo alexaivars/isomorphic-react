@@ -1,9 +1,9 @@
 #!/bin/bash
 echo "====> Running post install"
 
-echo "      Creating runtime folders."
-mkdir -p node_modules
-
-echo "      Setting runtime symlinks."
-ln -sf ../app node_modules
+# echo "      Creating runtime folders."
+# mkdir -p node_modules
+#
+# echo "      Setting runtime symlinks."
+# ln -sf ../app node_modules
 

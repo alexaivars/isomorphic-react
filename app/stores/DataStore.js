@@ -3,7 +3,7 @@
 'use strict';
 
 var createStore = require('dispatchr/utils/createStore');
-var PersistentStoreMixin = require('app/mixins/PersistentStoreMixin');
+var PersistentStoreMixin = require('../mixins/PersistentStoreMixin');
 
 // This is a very optimistic data store.
 var DataStore = createStore({
@@ -14,7 +14,6 @@ var DataStore = createStore({
 	},
 	handlers: {
 		SEARCH_TRACK: function(data) {
-			console.log(data);
 			if(data.error && data.error.message) {
 				this.data = {
 					message: data.error.message,
@@ -22,6 +21,21 @@ var DataStore = createStore({
 				};
 			} else {
 				this.data = data;
+			}
+			this.emitChange();
+		},
+		LOAD_TRACK: function(data) {
+			if(data.error && data.error.message) {
+				this.data = {
+					message: data.error.message,
+					tracks: []
+				};
+			} else {
+				this.data = {
+					tracks: {
+						items: [data]
+					}
+				};
 			}
 			this.emitChange();
 		}	

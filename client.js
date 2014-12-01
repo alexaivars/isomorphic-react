@@ -1,4 +1,4 @@
-/* jshint node:true */
+/* jshint node:false */
 (function() {
 		
 	'use strict';

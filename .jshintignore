@@ -1,0 +1,9 @@
+node_modules/**
+bower_components/**
+app/node_modules/**
+app/bower_components/**
+app/libs/**
+build/**
+resources/**
+**/*.bundle.js
+**/*.min.js
