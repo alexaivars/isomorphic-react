@@ -9,7 +9,7 @@
 	try {
 		var React = require('react');
 		var Router = require('react-router');
-		var app = require('app');
+		var app = require('./app');
 		var dehydratedState = window[app.uid];
 
 		// Debug.enable('*');
