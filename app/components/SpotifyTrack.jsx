@@ -12,8 +12,8 @@ var SpotifyAlbumCover = React.createClass({
     } catch(e) {
       return false;
     }
-    return this.transferPropsTo(
-      <figure>
+    return (
+      <figure {...this.props}>
         <img className='img-responsive img-rounded' src={url} />
       </figure>
     );

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var createStore = require('dispatchr/utils/createStore');
+var createStore = require('fluxible/addons').createStore
 var PersistentStoreMixin = require('../mixins/PersistentStoreMixin');
 
 // This is a very optimistic data store.
@@ -14,7 +14,7 @@ var DataStore = createStore({
   },
   handlers: {
     SEARCH_TRACK: function(data) {
-      if (data.error && data.error.message) {
+			if (data.error && data.error.message) {
         this.data = {
           message: data.error.message,
           tracks: []
@@ -47,6 +47,13 @@ var DataStore = createStore({
       return [];
     }
   },
+	getQuery: function() {
+    try {
+      return this.data.query || {};
+    } catch (e) {
+      return {};
+    }
+	},
   getMessage: function() {
     try {
       return this.data.message;

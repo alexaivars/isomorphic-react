@@ -3,16 +3,20 @@
 
   'use strict';
 
+  var Debug = require('debug');
   var debug = require('debug')('app:client:debug');
   var error = require('debug')('app:client:error');
+  
+  // attach our debug tool to the window 
+  // so we can change debug settings
+  window.Debug = Debug;
 
   try {
     var React = require('react');
     var Router = require('react-router');
     var app = require('./app');
     var dehydratedState = window[app.uid];
-
-    // Debug.enable('*');
+	  
     debug('rehydrating app');
     app.rehydrate(dehydratedState, function(err, context) {
         if (err) {

@@ -8,3 +8,10 @@ This is a small sample app built react, react-router, fluxible-app and spotify s
 
 ### Run the app!
 		$ npm start
+
+# TODO
+		- Cleanup legacy code from react 0.12.
+		- Add imutable-js example in store.
+		- Add should component update example.
+		- Add some unit tests and jshint.
+

@@ -16,8 +16,8 @@ module.exports = {
               .query(params)
               .type('json')
               .end(function(err, res){
-                if (err) {
-                  done(JSON.parse(err));
+								if (err) {
+                  done(JSON.parse(res.text));
                 } else {
                   done(JSON.parse(res.text));
                 }

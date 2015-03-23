@@ -26,7 +26,7 @@ var logger = require('morgan'),
     webpackCompiler = webpack(webpackConfig),
     webpackMiddlewareFactory = require("webpack-dev-middleware"),
     webpackMiddleware = webpackMiddlewareFactory(webpackCompiler, {
-      // noInfo: true,
+      noInfo: true,
       publicPath: webpackConfig.output.path,
       stats: {colors: true}
     });

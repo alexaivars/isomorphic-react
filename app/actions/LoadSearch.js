@@ -8,6 +8,7 @@ module.exports = function(context, payload, done) {
     type:'track',
     q: payload.query.q
   }, null, function(data) {
+    data.query = payload.query;
     context.dispatch('SEARCH_TRACK', data);
     done();
   });

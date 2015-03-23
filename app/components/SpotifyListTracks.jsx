@@ -14,8 +14,8 @@ var SpotifyAlbumCover = React.createClass({
       warn('album missing cover image', this.props.model);
       return false;
     }
-    return this.transferPropsTo(
-      <figure>
+    return (
+      <figure {...this.props}>
         <img className='img-responsive img-rounded' src={url} />
       </figure>
     );
@@ -23,15 +23,13 @@ var SpotifyAlbumCover = React.createClass({
 });
 
 var SpotifyTrack = React.createClass({
-  mixins: [Router.State],
   render: function() {
     if (!this.props.model) {
       return false;
     }
 
     var model = this.props.model;
-    var query = this.getQuery();
-
+    var query = this.props.meta.query;
     return (
       <article className='row'>
         <Link to="track" params={model} query={query}>

@@ -2,39 +2,31 @@
 
 var React   = require('react');
 var Router = require('react-router');
-var StoreMixin = require('fluxible-app').StoreMixin;
+var StoreMixin = require('fluxible').StoreMixin;
 var SpotifyTrack =  require('../SpotifyTrack.jsx');
 
 module.exports = React.createClass({
   displayName: 'ViewTrack',
-  mixins: [Router.State, StoreMixin],
+  mixins: [StoreMixin],
   statics: {
     loadAction: require('../../actions/LoadTrack'),
     storeListeners: ['DataStore']
   },
-  getStateFromStores: function() {
-    var store = this.props.context.getStore('DataStore');
-    return {
-      tracks: store.getTracks()
-    };
-  },
-  getInitialState: function() {
-    return this.getStateFromStores();
-  },
   render: function() {
-    if (!this.state.tracks || !this.state.tracks.length) {
-      return false;
-    }
-
-    var track = this.state.tracks[0];
-
+    var store = this.props.context.getStore('DataStore');
+    var tracks = store.getTracks();
+    var track = tracks[0];
+		var meta = {
+			query: store.getQuery()
+		};
+		
     return (
       <div className='spotify-search'>
-        <SpotifyTrack model={track} />
+        <SpotifyTrack model={track} meta={meta}/>
       </div>
     );
   },
   onChange: function() {
-    this.setState(this.getStateFromStores());
+    this.forceUpdate();
   }
 });
