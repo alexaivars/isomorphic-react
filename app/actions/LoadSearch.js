@@ -8,7 +8,15 @@ module.exports = function(context, payload, done) {
     type:'track',
     q: payload.query.q
   }, null, function(data) {
-    data.query = payload.query;
+		
+		if (data.error && data.error.message) {
+			data = {
+				message: data.error.message,
+        tracks: {}
+      };
+		}
+    
+		data.query = payload.query;
     context.dispatch('SEARCH_TRACK', data);
     done();
   });

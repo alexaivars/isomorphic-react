@@ -24,6 +24,7 @@
     "express-handlebars": "2.0.0",
     "express-state": "1.2.0",
     "fluxible": "0.3.0",
+    "immutable": "^3.6.4",
     "jsx-loader": "0.12.2",
     "lodash": "3.5.0",
     "morgan": "1.5.2",

@@ -20,7 +20,7 @@ module.exports = React.createClass({
   componentDidMount: function () {
 		// Proxy our onChangeHandler to throttle the output.
     this.onChangeHandlerThrottled = _.throttle(function(event) {
-      this.context.executeAction(
+			this.context.executeAction(
         LoadSearch,
         {
           query: {

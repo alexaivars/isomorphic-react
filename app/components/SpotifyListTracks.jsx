@@ -53,7 +53,6 @@ module.exports = React.createClass({
 
     var model = this.props.model;
     var meta = this.props.meta;
-
     return (
       <ul className='list-group'>
         {model.map(function(item) {

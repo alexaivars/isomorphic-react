@@ -73,7 +73,7 @@ server.use(function (req, res, next) {
       },
       function() {
         debug('Rendering application components');
-        var markup = React.renderToString(React.createElement(Handler, {context: context.getComponentContext()}));
+        var markup = React.renderToString(React.createElement(Handler, React.__spread({}, state, {context: context.getComponentContext()})));
         res.expose(app.dehydrate(context), app.uid);
         res.render('layout', {
           uid: app.uid,

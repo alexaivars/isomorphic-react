@@ -2,65 +2,73 @@
 
 'use strict';
 
-var createStore = require('fluxible/addons').createStore
-var PersistentStoreMixin = require('../mixins/PersistentStoreMixin');
+var createStore = require('fluxible/addons/createStore');
+var debug = require('debug')('app:datastore:debug');
+var Immutable = require('immutable');
+var EMPTY_LIST = Immutable.List([]);
+var EMPTY_MAP = Immutable.Map({});
 
 // This is a very optimistic data store.
-var DataStore = createStore({
+module.exports= createStore({
   storeName: 'DataStore',
-  mixins: [PersistentStoreMixin],
-  initialize: function() {
-    this.data = {};
+	initialize: function() {
+		this.data = Immutable.Map({});
+	},
+	
+	// Map action constants to handler functions
+	handlers: {
+		SEARCH_TRACK: '_receiveSearch',
+		LOAD_TRACK: '_receiveTrack'
+	},
+	_receiveSearch: function(data) {
+		var updated = Immutable.fromJS(data);	
+		if(!Immutable.is(this.data, updated)) {
+			this.data = updated;
+			this.emitChange();
+		}
   },
-  handlers: {
-    SEARCH_TRACK: function(data) {
-			if (data.error && data.error.message) {
-        this.data = {
-          message: data.error.message,
-          tracks: []
-        };
-      } else {
-        this.data = data;
-      }
-      this.emitChange();
-    },
-    LOAD_TRACK: function(data) {
-      if (data.error && data.error.message) {
-        this.data = {
-          message: data.error.message,
-          tracks: []
-        };
-      } else {
-        this.data = {
-          tracks: {
-            items: [].concat(data)
-          }
-        };
-      }
-      this.emitChange();
-    }
+	_receiveTrack: function(data) {
+		var updated = Immutable.fromJS(data);
+		if(!Immutable.is(this.data, updated)) {
+			this.data = updated;
+			this.emitChange();
+		}
   },
   getTracks: function() {
-    try {
-      return this.data.tracks.items || [];
-    } catch (e) {
-      return [];
-    }
+		return this.data
+						.getIn(['tracks','items'], EMPTY_LIST)
+						.toJS();
   },
+	
+	getTrack: function(id) {
+		if(this.data.get('id') !== id) {
+			return null
+		} else {
+			return this.data.toJS();
+		}
+	},
+
 	getQuery: function() {
-    try {
-      return this.data.query || {};
-    } catch (e) {
-      return {};
-    }
+		return this.data
+						.getIn(['query'], EMPTY_MAP)
+						.toJS();
 	},
   getMessage: function() {
-    try {
-      return this.data.message;
-    } catch (e) {
-      return [];
-    }
-  }
+		return this.data
+						.getIn(['message'], '');
+  },
+	
+	// Fluxible isomorphic interface methods. 
+	dehydrate: function() {
+		debug('dehydrating immutable %s', this.constructor.storeName);
+		return {
+			data: this.data.toJS(),
+		};
+	},
+	
+	rehydrate: function(state) {
+		debug('rehydrating imutable %s', this.constructor.storeName);
+		this.data = Immutable.fromJS(state.data);
+	}
 });
 
-module.exports = DataStore;

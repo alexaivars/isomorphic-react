@@ -25,10 +25,14 @@
         }
         debug('React Rendering');
         Router.run(app.getAppComponent(),Router.HistoryLocation, function(Handler, state) {
-          React.render(
+					React.render(
             React.createElement(
               Handler,
-              { context: context.getComponentContext() }
+							React.__spread(
+								{},
+								state, // Params from React Router 
+								{context: context.getComponentContext()} // our fluxible context
+							)
             ),
             document.getElementById(app.uid)
           );

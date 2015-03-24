@@ -2,16 +2,17 @@
 
 var React   = require('react');
 var Router = require('react-router');
-var StoreMixin = require('fluxible').StoreMixin;
 var SpotifySearch = require('../SpotifySearch.jsx');
 var SpotifyMessage = require('../SpotifyMessage.jsx');
 var SpotifyListTracks = require('../SpotifyListTracks.jsx');
+var LoadAction = require('../../actions/LoadSearch');
+var FluxibleMixin	= require('fluxible').FluxibleMixin;
 
 module.exports = React.createClass({
   displayName: 'ViewTrack',
-  mixins: [StoreMixin],
+  mixins: [FluxibleMixin],
   statics: {
-    loadAction: require('../../actions/LoadSearch'),
+    loadAction: LoadAction,
     storeListeners: ['DataStore']
   },
   /**
@@ -20,7 +21,12 @@ module.exports = React.createClass({
   onChange: function() {
     this.forceUpdate();
   },
-  render: function() {
+	
+	componentWillMount: function() {
+		this.props.context.executeAction(LoadAction, {query:this.props.query});
+	},
+	
+	render: function() {
     var store = this.props.context.getStore('DataStore');
     var message = store.getMessage();
     var tracks = store.getTracks();

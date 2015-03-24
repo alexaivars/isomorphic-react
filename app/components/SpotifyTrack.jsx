@@ -21,16 +21,15 @@ var SpotifyAlbumCover = React.createClass({
 });
 
 module.exports = React.createClass({
-  mixins: [Router.State],
   render: function() {
     if (!this.props.model) {
       return false;
     }
 
     var model = this.props.model;
-    var query = this.getQuery();
-
-    return (
+    var query = this.props.meta.query;
+    
+		return (
       <article className='row'>
         <Link to="/" query={query}>
         <SpotifyAlbumCover className='col-xs-3' model={model.album} />
